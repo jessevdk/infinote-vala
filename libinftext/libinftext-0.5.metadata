@@ -1,0 +1,2 @@
+InfTextBuffer::text_erased name="do_text_erased"
+InfTextBuffer::text_inserted name="do_text_inserted"
