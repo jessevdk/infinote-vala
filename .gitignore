@@ -1,0 +1,17 @@
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.log
+config.status
+configure
+external/Makefile
+external/Makefile.in
+install-sh
+libinfinity/Makefile
+libinfinity/Makefile.in
+libinftext/Makefile
+libinftext/Makefile.in
+libinftextgtk/Makefile
+libinftextgtk/Makefile.in
+missing
