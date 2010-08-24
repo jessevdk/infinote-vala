@@ -1,1 +1,1 @@
-SUBDIRS = libinfinity libinftext libinftextgtk external
+SUBDIRS = libinfinity libinftext libinftextgtk libinfgtk external

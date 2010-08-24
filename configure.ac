@@ -32,6 +32,7 @@ PKG_CHECK_MODULES(INFINITY,
 	libinfinity-$LIBINFINITY_API_VERSION
 	libinftext-$LIBINFINITY_API_VERSION
 	libinftextgtk-$LIBINFINITY_API_VERSION
+	libinfgtk-$LIBINFINITY_API_VERSION
 )
 
 VAPIDIR=`$PKG_CONFIG --variable=vapidir vala-$VALA_API_VERSION`
@@ -45,6 +46,7 @@ AC_CONFIG_FILES([
 	libinfinity/Makefile
 	libinftext/Makefile
 	libinftextgtk/Makefile
+	libinfgtk/Makefile
 	external/Makefile
 ])
 

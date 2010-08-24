@@ -1,0 +1,2 @@
+InfGtkBrowserModel::set_browser name="do_set_browser"
+InfGtkCertificateView hidden="1"
