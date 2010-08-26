@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<metadata>
+  <add-node path="/api/namespace[@name='Inf']">
+    <namespace name="Client"/>
+  </add-node>
+</metadata>
+<!-- vi:ex:ts=2:et -->
