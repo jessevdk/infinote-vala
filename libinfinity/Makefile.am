@@ -4,7 +4,6 @@ vapidir = $(VAPIDIR)
 vapi_DATA = $(target).vapi $(target).deps
 
 vapi_meta =			\
-	$(target).metadata	\
 	$(target).namespace	\
 	$(target).files		\
 	$(target).deps
@@ -12,7 +11,9 @@ vapi_meta =			\
 update-gi: $(vapi_meta)
 	@echo "[VALA_GEN_INTROSPECT]"
 	@$(VALA_GEN_INTROSPECT) $(target) $(srcdir)
-	@$(SED) -i -e 's/xmlNodePtr/xmlNode*/g' -e 's/xmlChar/gchar/g' -e 's/xmlNsPtr/xmlNs*/g' $(target).gi
+	@cp $(target).gi $(target).gi.orig
+	@echo "[FIXUP]"
+	@$(top_srcdir)/fixup/fixup -i $(target).gi.orig -o $(target).gi $(target).fixup
 
 update-vapi: $(target).gi
 	$(VAPIGEN) --vapidir $(VAPIDIR) --vapidir $(top_srcdir)/external --library $(target) $(target).gi

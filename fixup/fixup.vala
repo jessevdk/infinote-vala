@@ -36,23 +36,34 @@ class Fixup
 		return true;
 	}
 
-	delegate void XPathIterate(Xml.Node node);
+	delegate bool XPathIterate(Xml.Node node);
 
-	private void Find(Xml.Doc doc, string xpath, XPathIterate func)
+	private bool Find(Xml.Doc doc, string xpath, XPathIterate func)
 	{
 		Xml.XPath.Context ctx = new Xml.XPath.Context(doc);
 		Xml.XPath.Object? ret = ctx.eval_expression(xpath);
 
 		if (ret == null || ret.type != Xml.XPath.ObjectType.NODESET)
 		{
-			return;
+			return false;
+		}
+
+		if (ret.nodesetval->length() == 0)
+		{
+			stderr.printf(@"*** Warning: Could not find any match for: $(xpath)\n");
 		}
 
 		for (int i = 0; i < ret.nodesetval->length(); ++i)
 		{
 			unowned Xml.Node item = ret.nodesetval->item(i);
-			func(item);
+			
+			if (!func(item))
+			{
+				return false;
+			}
 		}
+
+		return false;
 	}
 
 	private void FixAddNode()
@@ -67,33 +78,33 @@ class Fixup
 
 				child = child.next;
 			}
+
+			return true;
 		});
 	}
 
 	private void FixRemoveNode()
 	{
-		Find(d_doc, d_node.get_prop("path"), (match) => {
+		Find(d_doc, d_node.get_content(), (match) => {
 			match.unlink();
+			return true;
 		});
 	}
 
 	private void FixMoveNode()
 	{
 		Find(d_doc, d_node.get_prop("path"), (match) => {
-			// TODO
-		});
-	}
+			unowned Xml.Node copy = match;
 
-	private void SetAttr(Xml.Node node, string name, string val)
-	{
-		if (node.get_prop(name) != null)
-		{
-			node.set_prop(name, val);
-		}
-		else
-		{
-			node.new_prop(name, val);
-		}
+			Find(d_doc, d_node.get_content(), (parent) => {
+				copy.unlink();
+				parent.add_child(copy);
+
+				return false;
+			});
+
+			return true;
+		});
 	}
 
 	private string SubstituteRegex(string val, GLib.MatchInfo info)
@@ -102,7 +113,7 @@ class Fixup
 
 		try
 		{
-			reg = new GLib.Regex("$([0-9])");
+			reg = new GLib.Regex("\\$([0-9]+)");
 		}
 		catch (GLib.RegexError e)
 		{
@@ -144,12 +155,12 @@ class Fixup
 		string? name = d_node.get_prop("name");
 		string? mat = d_node.get_prop("match");
 
-		if (name == null && mat == null)
+		if (name == null)
 		{
 			return;
 		}
 
-		string? val = d_node.get_prop("value");
+		string? val = d_node.get_content();
 
 		if (val == null)
 		{
@@ -157,38 +168,48 @@ class Fixup
 		}
 
 		Find(d_doc, d_node.get_prop("path"), (match) => {
-			if (name != null)
+			string? origval = match.get_prop(name);
+
+			if (origval == null && mat == null)
 			{
-				SetAttr(match, name, val);
+				match.new_prop(name, val);
 			}
-			else
+			else if (origval != null)
 			{
-				GLib.Regex reg;
+				string newval;
 
-				try
+				if (mat != null)
 				{
-					reg = new GLib.Regex(mat);
-				}
-				catch (GLib.RegexError e)
-				{
-					stderr.printf(@"Error compiling match regular expression ($(mat)): $(e.message)");
-					return;
-				}
+					GLib.Regex reg;
 
-				unowned Xml.Attr? attr = match.properties;
-
-				while (attr != null)
-				{
-					GLib.MatchInfo info;
-
-					if (reg.match(attr.name, 0, out info))
+					try
 					{
-						match.set_prop(attr.name, SubstituteRegex(val, info));
+						reg = new GLib.Regex(mat);
+					}
+					catch (GLib.RegexError e)
+					{
+						stderr.printf(@"Error compiling match regular expression ($(mat)): $(e.message)");
+						return true;
 					}
 
-					attr = attr.next;
+					GLib.MatchInfo info;
+
+					if (!reg.match(origval, 0, out info))
+					{
+						return true;
+					}
+
+					newval = SubstituteRegex(val, info);
 				}
+				else
+				{
+					newval = val;
+				}
+
+				match.set_prop(name, newval);
 			}
+
+			return true;
 		});
 	}
 
@@ -218,7 +239,7 @@ class Fixup
 				catch (GLib.RegexError e)
 				{
 					stderr.printf(@"Error compiling match regular expression ($(mat)): $(e.message)");
-					return;
+					return true;
 				}
 
 				unowned Xml.Attr? attr = match.properties;
@@ -233,6 +254,8 @@ class Fixup
 					attr = attr.next;
 				}
 			}
+
+			return true;
 		});
 	}
 
@@ -350,6 +373,6 @@ class Fixup
 		}
 
 		Fixup fixup = new Fixup(inp, outp, args[1:args.length]);
-		return fixup.Run() ? 1 : 0;
+		return fixup.Run() ? 0 : 1;
 	}
 }

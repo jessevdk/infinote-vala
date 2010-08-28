@@ -1,7 +1,91 @@
 <?xml version="1.0"?>
 <metadata>
-  <add-node path="/api/namespace[@name='Inf']">
-    <namespace name="Client"/>
-  </add-node>
+  <set-attr path="/api/namespace[@name='Inf']" name="name">Infinity</set-attr>
+
+  <remove-node>//constant</remove-node>
+
+  <!-- Client namespace -->
+  <add-node path="/api"><namespace name="Infinity.Client"/></add-node>
+  <move-node path="//namespace[@name='Infinity']/*[starts-with(@name, 'Infc')]">//namespace[@name='Infinity.Client']</move-node>
+  <set-attr path="//namespace[@name='Infinity.Client']/*[starts-with(@name, 'Infc')]" name="type-name" match="Infc(.*)">$1</set-attr>
+
+  <!-- Adopted namespace -->
+  <add-node path="/api"><namespace name="Infinity.Adopted"/></add-node>
+  <move-node path="//namespace[@name='Infinity']/*[starts-with(@name, 'InfAdopted')]">//namespace[@name='Infinity.Adopted']</move-node>
+  <set-attr path="//namespace[@name='Infinity.Adopted']/*[starts-with(@name, 'InfAdopted')]" name="type-name" match="InfAdopted(.*)">$1</set-attr>
+
+  <!-- Xml namespace -->
+  <add-node path="/api"><namespace name="Infinity.Xml"/></add-node>
+  <move-node path="//namespace[@name='Infinity']/*[starts-with(@name, 'InfXml')]">//namespace[@name='Infinity.Xml']</move-node>
+  <set-attr path="//namespace[@name='Infinity.Xml']/*[starts-with(@name, 'InfXml')]" name="type-name" match="InfXml(.*)">$1</set-attr>
+
+  <!-- Daemon namespace -->
+  <add-node path="/api"><namespace name="Infinity.Daemon"/></add-node>
+  <move-node path="//namespace[@name='Infinity']/*[starts-with(@name, 'Infd')]">//namespace[@name='Infinity.Daemon']</move-node>
+  <set-attr path="//namespace[@name='Infinity.Daemon']/*[starts-with(@name, 'Infd')]" name="type-name" match="Infd(.*)">$1</set-attr>
+
+  <!-- Communication namespace -->
+  <add-node path="/api"><namespace name="Infinity.Communication"/></add-node>
+  <move-node path="//namespace[@name='Infinity']/*[starts-with(@name, 'InfCommunication')]">//namespace[@name='Infinity.Communication']</move-node>
+  <set-attr path="//namespace[@name='Infinity.Communication']/*[starts-with(@name, 'InfCommunication')]" name="type-name" match="InfCommunication(.*)">$1</set-attr>
+
+  <!-- Xmpp namespace -->
+  <add-node path="/api"><namespace name="Infinity.Xmpp"/></add-node>
+  <move-node path="//namespace[@name='Infinity']/*[starts-with(@name, 'InfXmpp')]">//namespace[@name='Infinity.Xmpp']</move-node>
+  <set-attr path="//namespace[@name='Infinity.Xmpp']/*[starts-with(@name, 'InfXmpp')]" name="type-name" match="InfXmpp(.*)">$1</set-attr>
+
+  <set-attr path="//namespace[@name='Infinity']/*[starts-with(@name, 'Inf')]" name="type-name" match="Inf(.*)">$1</set-attr>
+
+  <!-- InfChatBuffer -->
+  <set-attr path="//namespace[@name='Infinity']/object[@name='InfChatBuffer']/method[@name='add_message']" name="name">add_message_</set-attr>
+
+  <!-- InfSession -->
+  <set-attr path="//namespace[@name='Infinity']/object[@name='InfSession']/method[@name='close']" name="name">close_</set-attr>
+
+  <!-- InfUserTable -->
+  <set-attr path="//namespace[@name='Infinity']/object[@name='InfUserTable']/method[@name='add_user']" name="name">add_user_</set-attr>
+  <set-attr path="//namespace[@name='Infinity']/object[@name='InfUserTable']/method[@name='remove_user']" name="name">remove_user_</set-attr>
+
+  <!-- InfXmppManager -->
+  <set-attr path="//namespace[@name='Infinity.Xmpp']/object[@name='InfXmppManager']/method[@name='add_connection']" name="name">add_connection_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Xmpp']/object[@name='InfXmppManager']/method[@name='remove_connection']" name="name">remove-connection_</set-attr>
+
+  <!-- InfDiscovery -->
+  <set-attr path="//namespace[@name='Infinity']/interface[@name='InfDiscovery']/method[@name='discovered']" name="name">discovered_</set-attr>
+  <set-attr path="//namespace[@name='Infinity']/interface[@name='InfDiscovery']/method[@name='undiscovered']" name="name">undiscovered_</set-attr>
+
+  <!-- InfcExploreRequest -->
+  <set-attr path="//namespace[@name='Infinity.Client']/object[@name='InfcExploreRequest']/method[@name='finished']" name="name">finished_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Client']/object[@name='InfcExploreRequest']/method[@name='initiated']" name="name">initiated_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Client']/object[@name='InfcExploreRequest']/method[@name='progress']" name="name">progress_</set-attr>
+
+  <remove-node>//namespace[@name='Infinity.Client']/object[@name='InfcExploreRequest']/property[@name='finished']</remove-node>
+  <remove-node>//namespace[@name='Infinity.Client']/object[@name='InfcExploreRequest']/property[@name='initiated']</remove-node>
+
+  <!-- InfcNodeRequest -->
+  <set-attr path="//namespace[@name='Infinity.Client']/object[@name='InfcNodeRequest']/method[@name='finished']" name="name">finished_</set-attr>
+
+  <!-- InfcRequest -->
+  <set-attr path="//namespace[@name='Infinity.Client']/object[@name='InfcRequest']/method[@name='failed']" name="name">failed_</set-attr>
+
+  <!-- InfcUserRequest -->
+  <set-attr path="//namespace[@name='Infinity.Client']/object[@name='InfcUserRequest']/method[@name='finished']" name="name">finished_</set-attr>
+
+  <!-- InfAdoptedRequestLot -->
+  <set-attr path="//namespace[@name='Infinity.Adopted']/object[@name='InfAdoptedRequestLog']/method[@name='next_redo']" name="name">next_redo_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Adopted']/object[@name='InfAdoptedRequestLog']/method[@name='next_undo']" name="name">next_undo_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Adopted']/object[@name='InfAdoptedRequestLog']/method[@name='add_request']" name="name">add_request_</set-attr>
+
+  <!-- InfXmlConnection -->
+  <set-attr path="//namespace[@name='Infinity.Xml']/interface[@name='InfXmlConnection']/method[@name='error']" name="name">error_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Xml']/interface[@name='InfXmlConnection']/method[@name='received']" name="name">received_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Xml']/interface[@name='InfXmlConnection']/method[@name='sent']" name="name">sent_</set-attr>
+
+  <!-- InfdServer -->
+  <set-attr path="//namespace[@name='Infinity.Daemon']/interface[@name='InfdXmlServer']/method[@name='new_connection']" name="name">new_connection_</set-attr>
+
+  <!-- InfCommunicationMethod -->
+  <set-attr path="//namespace[@name='Infinity.Communication']/interface[@name='InfCommunicationMethod']/method[@name='add_member']" name="name">add_member_</set-attr>
+  <set-attr path="//namespace[@name='Infinity.Communication']/interface[@name='InfCommunicationMethod']/method[@name='remove_member']" name="name">remove_member_</set-attr>
 </metadata>
 <!-- vi:ex:ts=2:et -->

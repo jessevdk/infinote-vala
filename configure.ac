@@ -12,12 +12,28 @@ AC_SUBST(LIBINFINITY_API_VERSION)
 
 VALA_API_VERSION=0.10
 
-AC_PATH_PROG(VALA_GEN_INTROSPECT, vala-gen-introspect)
-AC_PATH_PROG(VAPIGEN, vapigen)
+AC_PATH_PROG(VALA_GEN_INTROSPECT, vala-gen-introspect-$VALA_API_VERSION)
+
+if test "x$VALA_GEN_INTROSPECT" = "x"; then
+	AC_PATH_PROG(VALA_GEN_INTROSPECT, vala-gen-introspect)
+fi
+
+AC_PATH_PROG(VAPIGEN, vapigen-$VALA_API_VERSION)
+
+if test "x$VAPIGEN" = "x"; then
+	AC_PATH_PROG(VAPIGEN, vapigen)
+fi
+
+AC_PATH_PROG(VALAC, valac-$VALA_API_VERSION)
+
+if test "x$VALAC" = "x"; then
+	AC_PATH_PROG(VALAC, valac)
+fi
 
 AC_SUBST(VALA_API_VERSION)
 AC_SUBST(VALA_GEN_INTROSPECT)
 AC_SUBST(VAPIGEN)
+AC_SUBST(VALAC)
 
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
@@ -51,3 +67,11 @@ AC_CONFIG_FILES([
 ])
 
 AC_OUTPUT
+
+echo "
+Configuration:
+
+	vala-gen-introspect : $VALA_GEN_INTROSPECT
+	vapigen             : $VAPIGEN
+	valac               : $VALAC
+"
